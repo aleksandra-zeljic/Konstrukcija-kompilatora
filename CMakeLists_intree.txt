@@ -1,0 +1,9 @@
+add_llvm_library( LLVMOurAggressiveDCE MODULE BUILDTREE_ONLY
+  OurAggressiveDCEPass.cpp
+  OurPostDominatorTree.cpp
+
+  DEPENDS
+  intrinsics_gen
+  PLUGIN_TOOL
+  opt
+  )
