@@ -2,6 +2,11 @@
 
 Seminarski rad iz predmeta **Konstrukcija kompilatora**, MATF.
 
+Autori:
+Martina Iricanin, 355/2021
+Milos Krstic, 63/2021
+Aleksandra Zeljic, 154/2020
+
 Pass je napisan u stilu vezbi (Legacy `FunctionPass`, `runOnFunction`, `RegisterPass`), sa sopstvenom pomocnom klasom `OurPostDominatorTree` za racunanje post-dominatora i kontrolnih zavisnosti. Dodata je i New Pass Manager registracija da bi pass radio na LLVM 18.
 
 ## Fajlovi
