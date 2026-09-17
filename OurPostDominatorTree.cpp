@@ -1,5 +1,8 @@
 #include "OurPostDominatorTree.h"
 #include "llvm/IR/CFG.h"
+#include <vector>
+#include <unordered_set>
+#include "llvm/IR/BasicBlock.h"
 
 OurPostDominatorTree::OurPostDominatorTree(Function &F)
 {
@@ -111,22 +114,35 @@ BasicBlock *OurPostDominatorTree::getIPostDom(BasicBlock *B)
   return IPostDom[B];
 }
 
-std::vector<BasicBlock *> OurPostDominatorTree::controlDependencesOf(BasicBlock *BB)
+std::vector<BasicBlock *> OurPostDominatorTree::controlDependencesOf(
+    BasicBlock *BB)
 {
   std::vector<BasicBlock *> Result;
   std::unordered_set<BasicBlock *> Seen;
 
-  BasicBlock *IPDomOfBB = IPostDom[BB];
+  for (BasicBlock *Controller : Blocks) {
 
-  for (BasicBlock *Pred : predecessors(BB)) {
-    BasicBlock *Runner = Pred;
+    if (Controller->getTerminator()->getNumSuccessors() < 2) {
+      continue;
+    }
 
-    while (Runner != nullptr && Runner != IPDomOfBB) {
-      if (!Seen.count(Runner)) {
-        Result.push_back(Runner);
-        Seen.insert(Runner);
+    BasicBlock *Stop = IPostDom[Controller];
+
+    for (BasicBlock *Succ : successors(Controller)) {
+      BasicBlock *Runner = Succ;
+
+      while (Runner != nullptr && Runner != Stop) {
+
+        if (Runner == BB) {
+          if (!Seen.count(Controller)) {
+            Result.push_back(Controller);
+            Seen.insert(Controller);
+          }
+          break;
+        }
+
+        Runner = IPostDom[Runner];
       }
-      Runner = IPostDom[Runner];
     }
   }
 
